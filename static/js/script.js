@@ -4,9 +4,6 @@ let urineOutputs = [];
 
 function initializeAppData() {
     console.log('Initializing app data');
-    localStorage.clear();
-    console.log('Local storage cleared');
-    
     if (!localStorage.getItem('appInitialized')) {
         console.log('Setting up initial data');
         localStorage.setItem('visits', JSON.stringify([]));
@@ -14,12 +11,10 @@ function initializeAppData() {
         localStorage.setItem('urineOutputs', JSON.stringify([]));
         localStorage.setItem('appInitialized', 'true');
     }
-    
     console.log('Loading data from local storage');
     visits = JSON.parse(localStorage.getItem('visits')) || [];
     intakes = JSON.parse(localStorage.getItem('intakes')) || [];
     urineOutputs = JSON.parse(localStorage.getItem('urineOutputs')) || [];
-    
     console.log('Initialization complete');
 }
 
@@ -96,35 +91,119 @@ function updateChart() {
 }
 
 function generateDetailedReport() {
-    // Implementation of generateDetailedReport
+    console.log('Generating detailed report');
+    const reportWindow = window.open('', '_blank');
+    reportWindow.document.write('<html><head><title>Detailed NoctuTrack Report</title></head><body>');
+    reportWindow.document.write('<h1>Detailed NoctuTrack Report</h1>');
+    
+    // Add visit details
+    reportWindow.document.write('<h2>Bathroom Visits</h2>');
+    visits.forEach(visit => {
+        reportWindow.document.write(`<p>${new Date(visit).toLocaleString()}</p>`);
+    });
+    
+    // Add intake details
+    reportWindow.document.write('<h2>Intakes</h2>');
+    intakes.forEach(intake => {
+        reportWindow.document.write(`<p>${new Date(intake.timestamp).toLocaleString()} - ${intake.liquidAmount ? `Liquid: ${intake.liquidAmount}ml` : `Food: ${intake.foodType}`}</p>`);
+    });
+    
+    // Add urine output details
+    reportWindow.document.write('<h2>Urine Outputs</h2>');
+    urineOutputs.forEach(output => {
+        reportWindow.document.write(`<p>${new Date(output.timestamp).toLocaleString()} - ${output.amount}ml</p>`);
+    });
+    
+    reportWindow.document.write('</body></html>');
+    reportWindow.document.close();
+    console.log('Detailed report generated');
 }
 
 function clearReport() {
-    // Implementation of clearReport
+    console.log('Clearing report');
+    document.getElementById('todayCount').textContent = '0';
+    document.getElementById('weekCount').textContent = '0';
+    document.getElementById('avgCount').textContent = '0';
+    document.getElementById('todayCountSummary').textContent = '0';
+    document.getElementById('weekCountSummary').textContent = '0';
+    document.getElementById('avgCountSummary').textContent = '0';
+    console.log('Report cleared');
 }
 
 function generateTimeRangeReport() {
-    // Implementation of generateTimeRangeReport
+    console.log('Generating time range report');
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const startTime = document.getElementById('startTime').value;
+    const endTime = document.getElementById('endTime').value;
+    
+    const start = new Date(`${startDate}T${startTime}`);
+    const end = new Date(`${endDate}T${endTime}`);
+    
+    const filteredVisits = visits.filter(v => {
+        const visitDate = new Date(v);
+        return visitDate >= start && visitDate <= end;
+    });
+    
+    document.getElementById('timeRangeCount').textContent = filteredVisits.length;
+    console.log('Time range report generated');
 }
 
 function clearTimeRangeReport() {
-    // Implementation of clearTimeRangeReport
+    console.log('Clearing time range report');
+    document.getElementById('timeRangeCount').textContent = '0';
+    document.getElementById('startDate').value = '';
+    document.getElementById('endDate').value = '';
+    document.getElementById('startTime').value = '00:00';
+    document.getElementById('endTime').value = '23:59';
+    console.log('Time range report cleared');
 }
 
 function trackLiquid() {
-    // Implementation of trackLiquid
+    console.log('Tracking liquid intake');
+    const liquidAmount = document.getElementById('liquidAmount').value;
+    if (liquidAmount) {
+        const intake = {
+            timestamp: new Date().toISOString(),
+            liquidAmount: parseInt(liquidAmount),
+            foodType: null
+        };
+        intakes.push(intake);
+        localStorage.setItem('intakes', JSON.stringify(intakes));
+        document.getElementById('liquidAmount').value = '';
+        console.log('Liquid intake tracked:', intake);
+    }
 }
 
 function trackFood() {
-    // Implementation of trackFood
+    console.log('Tracking food intake');
+    const foodType = document.getElementById('foodType').value;
+    if (foodType) {
+        const intake = {
+            timestamp: new Date().toISOString(),
+            liquidAmount: null,
+            foodType: foodType
+        };
+        intakes.push(intake);
+        localStorage.setItem('intakes', JSON.stringify(intakes));
+        document.getElementById('foodType').value = '';
+        console.log('Food intake tracked:', intake);
+    }
 }
 
 function trackUrine() {
-    // Implementation of trackUrine
-}
-
-function loadSyntheticData() {
-    // Implementation of loadSyntheticData
+    console.log('Tracking urine output');
+    const urineAmount = document.getElementById('urineAmount').value;
+    if (urineAmount) {
+        const output = {
+            timestamp: new Date().toISOString(),
+            amount: parseInt(urineAmount)
+        };
+        urineOutputs.push(output);
+        localStorage.setItem('urineOutputs', JSON.stringify(urineOutputs));
+        document.getElementById('urineAmount').value = '';
+        console.log('Urine output tracked:', output);
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -145,6 +224,5 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('trackFoodButton').addEventListener('click', trackFood);
     document.getElementById('trackUrineButton').addEventListener('click', trackUrine);
     
-    loadSyntheticData();
     updateReport();
 });
