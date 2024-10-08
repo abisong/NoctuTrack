@@ -13,7 +13,76 @@
     <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icon-192x192.png') }}">
 </head>
 <body>
-    <!-- Rest of the HTML content remains the same -->
+    <h1>NoctuTrack: Nocturia Bathroom Tracker</h1>
+    
+    <button id="trackButton">Track Bathroom Visit</button>
+    
+    <div id="visitSummary">
+        <p>Total visits today: <span id="todayCountSummary">0</span></p>
+        <p>Total visits this week: <span id="weekCountSummary">0</span></p>
+        <p>Average visits per day: <span id="avgCountSummary">0</span></p>
+    </div>
+    
+    <div id="trackUrine">
+        <h2>Track Urine Output</h2>
+        <div class="form-group">
+            <label for="urineAmount">Urine Amount (ml):</label>
+            <input type="number" id="urineAmount" min="0" step="50">
+        </div>
+        <button id="trackUrineButton">Track Urine</button>
+    </div>
+    
+    <div id="trackLiquid">
+        <h2>Track Liquid Intake</h2>
+        <div class="form-group">
+            <label for="liquidAmount">Liquid Amount (ml):</label>
+            <input type="number" id="liquidAmount" min="0" step="50">
+        </div>
+        <button id="trackLiquidButton">Track Liquid</button>
+    </div>
+    
+    <div id="trackFood">
+        <h2>Track Food Intake</h2>
+        <div class="form-group">
+            <label for="foodType">Food Type:</label>
+            <input type="text" id="foodType">
+        </div>
+        <button id="trackFoodButton">Track Food</button>
+    </div>
+    
+    <div id="report">
+        <h2>Bathroom Visit Report</h2>
+        <p>Total visits today: <span id="todayCount">0</span></p>
+        <p>Total visits this week: <span id="weekCount">0</span></p>
+        <p>Average visits per day: <span id="avgCount">0</span></p>
+        <button id="generateReport">Generate Detailed Report</button>
+        <button id="clearReport">Clear Display</button>
+    </div>
+    
+    <div id="timeRangeReport">
+        <h2>Time Range Report</h2>
+        <div class="form-group">
+            <label for="startDate">Start Date:</label>
+            <input type="text" id="startDate" class="flatpickr" placeholder="Select start date">
+        </div>
+        <div class="form-group">
+            <label for="endDate">End Date:</label>
+            <input type="text" id="endDate" class="flatpickr" placeholder="Select end date">
+        </div>
+        <div class="form-group">
+            <label for="startTime">Start Time:</label>
+            <input type="time" id="startTime" value="00:00">
+        </div>
+        <div class="form-group">
+            <label for="endTime">End Time:</label>
+            <input type="time" id="endTime" value="23:59">
+        </div>
+        <button id="generateTimeRangeReport">Generate Time Range Report</button>
+        <button id="clearTimeRangeReport">Clear</button>
+        <p>Visits in selected time range: <span id="timeRangeCount">0</span></p>
+    </div>
+    
+    <canvas id="weeklyChart" class="chart"></canvas>
     
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <script>
