@@ -2,8 +2,13 @@ let visits = [];
 let intakes = [];
 let urineOutputs = [];
 
-function initializeAppData() {
+function initializeAppData(clearStorage = false) {
     console.log('Initializing app data');
+    if (clearStorage) {
+        console.log('Clearing local storage');
+        localStorage.clear();
+        localStorage.setItem('appInitialized', 'true');
+    }
     if (!localStorage.getItem('appInitialized')) {
         console.log('Setting up initial data');
         localStorage.setItem('visits', JSON.stringify([]));
@@ -94,6 +99,7 @@ function generateDetailedReport() {
     console.log('Generating detailed report');
     const reportWindow = window.open('', '_blank');
     reportWindow.document.write('<html><head><title>Detailed NoctuTrack Report</title></head><body>');
+    reportWindow.document.write('<button onclick="window.close()">Back to Home</button>');
     reportWindow.document.write('<h1>Detailed NoctuTrack Report</h1>');
     
     // Add visit details
@@ -137,16 +143,30 @@ function generateTimeRangeReport() {
     const startTime = document.getElementById('startTime').value;
     const endTime = document.getElementById('endTime').value;
     
+    console.log('Date range:', startDate, endDate);
+    console.log('Time range:', startTime, endTime);
+    
+    if (!startDate || !endDate) {
+        console.error('Start date or end date is missing');
+        alert('Please select both start and end dates');
+        return;
+    }
+    
     const start = new Date(`${startDate}T${startTime}`);
     const end = new Date(`${endDate}T${endTime}`);
+    
+    console.log('Start datetime:', start);
+    console.log('End datetime:', end);
     
     const filteredVisits = visits.filter(v => {
         const visitDate = new Date(v);
         return visitDate >= start && visitDate <= end;
     });
     
+    console.log('Filtered visits:', filteredVisits);
+    
     document.getElementById('timeRangeCount').textContent = filteredVisits.length;
-    console.log('Time range report generated');
+    console.log('Time range report generated, count:', filteredVisits.length);
 }
 
 function clearTimeRangeReport() {
@@ -206,6 +226,12 @@ function trackUrine() {
     }
 }
 
+function clearLocalStorage() {
+    console.log('Clearing local storage');
+    initializeAppData(true);
+    updateReport();
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM content loaded');
     initializeAppData();
@@ -223,6 +249,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('trackLiquidButton').addEventListener('click', trackLiquid);
     document.getElementById('trackFoodButton').addEventListener('click', trackFood);
     document.getElementById('trackUrineButton').addEventListener('click', trackUrine);
+    document.getElementById('clearStorageButton').addEventListener('click', clearLocalStorage);
     
     updateReport();
 });

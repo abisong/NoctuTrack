@@ -84,6 +84,9 @@
     
     <canvas id="weeklyChart" class="chart"></canvas>
     
+    <!-- Add a button to clear local storage -->
+    <button id="clearStorageButton">Clear Local Storage</button>
+    
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <script>
         if ('serviceWorker' in navigator) {
