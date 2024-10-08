@@ -84,6 +84,10 @@ input[type="time"], input[type="number"], input[type="text"] {
     font-size: 16px;
 }
 
+.flatpickr-input {
+    background-color: white;
+}
+
 /* Responsive design */
 @media (max-width: 600px) {
     body {

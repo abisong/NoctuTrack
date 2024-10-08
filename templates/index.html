@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NoctuTrack: Nocturia Bathroom Tracker</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
 <body>
     <h1>NoctuTrack: Nocturia Bathroom Tracker</h1>
@@ -51,12 +53,20 @@
     <div id="timeRangeReport">
         <h2>Time Range Report</h2>
         <div class="form-group">
+            <label for="startDate">Start Date:</label>
+            <input type="text" id="startDate" class="flatpickr" placeholder="Select start date">
+        </div>
+        <div class="form-group">
+            <label for="endDate">End Date:</label>
+            <input type="text" id="endDate" class="flatpickr" placeholder="Select end date">
+        </div>
+        <div class="form-group">
             <label for="startTime">Start Time:</label>
             <input type="time" id="startTime" value="00:00">
         </div>
         <div class="form-group">
             <label for="endTime">End Time:</label>
-            <input type="time" id="endTime" value="06:00">
+            <input type="time" id="endTime" value="23:59">
         </div>
         <button id="generateTimeRangeReport">Generate Time Range Report</button>
         <button id="clearTimeRangeReport">Clear</button>

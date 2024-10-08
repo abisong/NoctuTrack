@@ -133,24 +133,25 @@ function generateDetailedReport() {
 }
 
 function generateTimeRangeReport() {
+    const startDate = flatpickr.parseDate(document.getElementById('startDate').value, "Y-m-d");
+    const endDate = flatpickr.parseDate(document.getElementById('endDate').value, "Y-m-d");
     const startTime = document.getElementById('startTime').value;
     const endTime = document.getElementById('endTime').value;
     
+    if (!startDate || !endDate) {
+        alert("Please select both start and end dates.");
+        return;
+    }
+
     const [startHour, startMinute] = startTime.split(':').map(Number);
     const [endHour, endMinute] = endTime.split(':').map(Number);
     
+    startDate.setHours(startHour, startMinute, 0, 0);
+    endDate.setHours(endHour, endMinute, 59, 999);
+    
     const filteredVisits = visits.filter(v => {
         const visitDate = new Date(v);
-        const visitHour = visitDate.getHours();
-        const visitMinute = visitDate.getMinutes();
-        
-        if (startHour < endHour || (startHour === endHour && startMinute <= endMinute)) {
-            return (visitHour > startHour || (visitHour === startHour && visitMinute >= startMinute)) &&
-                   (visitHour < endHour || (visitHour === endHour && visitMinute <= endMinute));
-        } else {
-            return (visitHour > startHour || (visitHour === startHour && visitMinute >= startMinute)) ||
-                   (visitHour < endHour || (visitHour === endHour && visitMinute <= endMinute));
-        }
+        return visitDate >= startDate && visitDate <= endDate;
     });
     
     document.getElementById('timeRangeCount').textContent = filteredVisits.length;
@@ -223,9 +224,18 @@ function clearReport() {
 
 function clearTimeRangeReport() {
     document.getElementById('timeRangeCount').textContent = '0';
+    document.getElementById('startDate').value = '';
+    document.getElementById('endDate').value = '';
+    document.getElementById('startTime').value = '00:00';
+    document.getElementById('endTime').value = '23:59';
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    flatpickr(".flatpickr", {
+        dateFormat: "Y-m-d",
+        maxDate: "today"
+    });
+
     document.getElementById('trackButton').addEventListener('click', trackVisit);
     document.getElementById('generateReport').addEventListener('click', generateDetailedReport);
     document.getElementById('clearReport').addEventListener('click', clearReport);
