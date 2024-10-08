@@ -98,29 +98,85 @@ function updateChart() {
 function generateDetailedReport() {
     console.log('Generating detailed report');
     const reportWindow = window.open('', '_blank');
-    reportWindow.document.write('<html><head><title>Detailed NoctuTrack Report</title></head><body>');
-    reportWindow.document.write('<button onclick="window.close()">Back to Home</button>');
-    reportWindow.document.write('<h1>Detailed NoctuTrack Report</h1>');
-    
-    // Add visit details
-    reportWindow.document.write('<h2>Bathroom Visits</h2>');
-    visits.forEach(visit => {
-        reportWindow.document.write(`<p>${new Date(visit).toLocaleString()}</p>`);
-    });
-    
-    // Add intake details
-    reportWindow.document.write('<h2>Intakes</h2>');
-    intakes.forEach(intake => {
-        reportWindow.document.write(`<p>${new Date(intake.timestamp).toLocaleString()} - ${intake.liquidAmount ? `Liquid: ${intake.liquidAmount}ml` : `Food: ${intake.foodType}`}</p>`);
-    });
-    
-    // Add urine output details
-    reportWindow.document.write('<h2>Urine Outputs</h2>');
-    urineOutputs.forEach(output => {
-        reportWindow.document.write(`<p>${new Date(output.timestamp).toLocaleString()} - ${output.amount}ml</p>`);
-    });
-    
-    reportWindow.document.write('</body></html>');
+    reportWindow.document.write(`
+        <html>
+        <head>
+            <title>Detailed NoctuTrack Report</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    line-height: 1.6;
+                    color: #333;
+                    max-width: 800px;
+                    margin: 0 auto;
+                    padding: 20px;
+                    background-color: #f0f8ff;
+                }
+                h1, h2 {
+                    color: #1e90ff;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 20px;
+                }
+                th, td {
+                    border: 1px solid #ddd;
+                    padding: 8px;
+                    text-align: left;
+                }
+                th {
+                    background-color: #1e90ff;
+                    color: white;
+                }
+                .back-button {
+                    background-color: #1e90ff;
+                    color: white;
+                    border: none;
+                    padding: 10px 20px;
+                    font-size: 16px;
+                    cursor: pointer;
+                    border-radius: 5px;
+                }
+                .back-button:hover {
+                    background-color: #0000cd;
+                }
+                .footer {
+                    margin-top: 20px;
+                    text-align: center;
+                    font-size: 0.8em;
+                    color: #666;
+                }
+            </style>
+        </head>
+        <body>
+            <h1>NoctuTrack: Detailed Report</h1>
+            <button class="back-button" onclick="window.close()">Back to Home</button>
+            
+            <h2>Bathroom Visits</h2>
+            <table>
+                <tr><th>Date</th><th>Time</th></tr>
+                ${visits.map(visit => `<tr><td>${new Date(visit).toLocaleDateString()}</td><td>${new Date(visit).toLocaleTimeString()}</td></tr>`).join('')}
+            </table>
+            
+            <h2>Intakes</h2>
+            <table>
+                <tr><th>Date</th><th>Time</th><th>Type</th><th>Amount</th></tr>
+                ${intakes.map(intake => `<tr><td>${new Date(intake.timestamp).toLocaleDateString()}</td><td>${new Date(intake.timestamp).toLocaleTimeString()}</td><td>${intake.liquidAmount ? 'Liquid' : 'Food'}</td><td>${intake.liquidAmount ? intake.liquidAmount + 'ml' : intake.foodType}</td></tr>`).join('')}
+            </table>
+            
+            <h2>Urine Outputs</h2>
+            <table>
+                <tr><th>Date</th><th>Time</th><th>Amount (ml)</th></tr>
+                ${urineOutputs.map(output => `<tr><td>${new Date(output.timestamp).toLocaleDateString()}</td><td>${new Date(output.timestamp).toLocaleTimeString()}</td><td>${output.amount}</td></tr>`).join('')}
+            </table>
+            
+            <div class="footer">
+                Report generated on ${new Date().toLocaleString()}
+            </div>
+        </body>
+        </html>
+    `);
     reportWindow.document.close();
     console.log('Detailed report generated');
 }
