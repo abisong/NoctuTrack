@@ -137,7 +137,10 @@ function generateTimeRangeReport() {
     const startTime = document.getElementById('startTime').value;
     const endTime = document.getElementById('endTime').value;
 
+    console.log('Generating Time Range Report with:', { startDate, endDate, startTime, endTime });
+
     if (!startDate || !endDate || !startTime || !endTime) {
+        console.error('Missing date or time input');
         alert('Please select both start and end dates and times.');
         return;
     }
@@ -145,7 +148,11 @@ function generateTimeRangeReport() {
     const start = new Date(`${startDate}T${startTime}`);
     const end = new Date(`${endDate}T${endTime}`);
 
+    console.log('Start datetime:', start);
+    console.log('End datetime:', end);
+
     if (start > end) {
+        console.error('Invalid date range');
         alert('Start date/time must be before end date/time.');
         return;
     }
@@ -154,6 +161,8 @@ function generateTimeRangeReport() {
         const visitDate = new Date(v);
         return visitDate >= start && visitDate <= end;
     });
+
+    console.log('Filtered visits:', filteredVisits);
 
     document.getElementById('timeRangeCount').textContent = filteredVisits.length;
 
