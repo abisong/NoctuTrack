@@ -283,13 +283,16 @@ function trackUrine() {
 }
 
 function clearLocalStorage() {
-    console.log('Clearing local storage');
-    if (confirm("Are you sure you want to clear all data? This action cannot be undone.")) {
+    console.log('Attempting to clear local storage');
+    const userInput = prompt("Warning: This action will delete all your data. Type 'delete' to confirm:");
+    if (userInput && userInput.toLowerCase() === 'delete') {
+        console.log('User confirmed. Clearing local storage');
         initializeAppData(true);
         updateReport();
-        alert("Local storage has been cleared successfully.");
+        alert('Local storage has been cleared successfully.');
     } else {
         console.log('Local storage clear operation cancelled by user');
+        alert('Operation cancelled. Your data remains intact.');
     }
 }
 
