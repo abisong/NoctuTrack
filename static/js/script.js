@@ -1,6 +1,7 @@
 let visits = [];
 let intakes = [];
 let urineOutputs = [];
+let deferredPrompt;
 
 function loadSyntheticData() {
     fetch('/synthetic_data')
@@ -240,6 +241,34 @@ function trackUrine() {
     } else {
         alert('Please enter a urine amount.');
     }
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  showInstallPromotion();
+});
+
+function showInstallPromotion() {
+  const installButton = document.createElement('button');
+  installButton.textContent = 'Install NoctuTrack App';
+  installButton.classList.add('install-button');
+  installButton.addEventListener('click', installPWA);
+  document.body.appendChild(installButton);
+}
+
+function installPWA() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('User accepted the install prompt');
+      } else {
+        console.log('User dismissed the install prompt');
+      }
+      deferredPrompt = null;
+    });
+  }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
