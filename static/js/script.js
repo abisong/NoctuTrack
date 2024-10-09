@@ -129,7 +129,7 @@ function generateDetailedReport() {
                     background-color: #1e90ff;
                     color: white;
                 }
-                .back-button {
+                .button {
                     background-color: #1e90ff;
                     color: white;
                     border: none;
@@ -137,8 +137,9 @@ function generateDetailedReport() {
                     font-size: 16px;
                     cursor: pointer;
                     border-radius: 5px;
+                    margin-right: 10px;
                 }
-                .back-button:hover {
+                .button:hover {
                     background-color: #0000cd;
                 }
                 .footer {
@@ -151,7 +152,8 @@ function generateDetailedReport() {
         </head>
         <body>
             <h1>NoctuTrack: Detailed Report</h1>
-            <button class="back-button" onclick="window.close()">Back to Home</button>
+            <button class="button" onclick="window.close()">Back to Home</button>
+            <button class="button" onclick="window.print()">Download PDF</button>
             
             <h2>Bathroom Visits</h2>
             <table>
