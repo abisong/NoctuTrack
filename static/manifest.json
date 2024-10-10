@@ -1,7 +1,7 @@
 {
-  "name": "NoctuTrack: Nocturia Bathroom Tracker",
+  "name": "NoctuTrack",
   "short_name": "NoctuTrack",
-  "description": "A mobile-friendly app for tracking nocturia and related data",
+  "description": "Nocturia Bathroom Tracker",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f0f8ff",
