@@ -41,8 +41,21 @@ let visits = [];
 let intakes = [];
 let urineOutputs = [];
 
-function initializeAppData() {
+function initializeAppData(clearStorage = false) {
   console.log('Initializing app data');
+  if (clearStorage) {
+    console.log('Clearing local storage');
+    localStorage.clear();
+    localStorage.setItem('appInitialized', 'true');
+  }
+  if (!localStorage.getItem('appInitialized')) {
+    console.log('Setting up initial data');
+    localStorage.setItem('visits', JSON.stringify([]));
+    localStorage.setItem('intakes', JSON.stringify([]));
+    localStorage.setItem('urineOutputs', JSON.stringify([]));
+    localStorage.setItem('appInitialized', 'true');
+  }
+  console.log('Loading data from local storage');
   visits = JSON.parse(localStorage.getItem('visits')) || [];
   intakes = JSON.parse(localStorage.getItem('intakes')) || [];
   urineOutputs = JSON.parse(localStorage.getItem('urineOutputs')) || [];
@@ -70,35 +83,20 @@ function updateReport() {
   
   console.log('Counts calculated:', { todayCount, weekCount, avgCount });
   
-  const elements = {
-    'todayCount': todayCount,
-    'weekCount': weekCount,
-    'avgCount': avgCount,
-    'todayCountSummary': todayCount,
-    'weekCountSummary': weekCount,
-    'avgCountSummary': avgCount
-  };
-
-  Object.entries(elements).forEach(([id, value]) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.textContent = value;
-    } else {
-      console.warn(`Element with id '${id}' not found`);
-    }
-  });
+  document.getElementById('todayCount').textContent = todayCount;
+  document.getElementById('weekCount').textContent = weekCount;
+  document.getElementById('avgCount').textContent = avgCount;
+  
+  document.getElementById('todayCountSummary').textContent = todayCount;
+  document.getElementById('weekCountSummary').textContent = weekCount;
+  document.getElementById('avgCountSummary').textContent = avgCount;
   
   updateChart();
 }
 
 function updateChart() {
   console.log('Updating chart');
-  const ctx = document.getElementById('weeklyChart');
-  if (!ctx) {
-    console.warn('Chart element not found');
-    return;
-  }
-
+  const ctx = document.getElementById('weeklyChart').getContext('2d');
   const labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const data = new Array(7).fill(0);
   
@@ -226,15 +224,12 @@ function generateDetailedReport() {
 
 function clearReport() {
   console.log('Clearing report');
-  const elements = ['todayCount', 'weekCount', 'avgCount', 'todayCountSummary', 'weekCountSummary', 'avgCountSummary'];
-  elements.forEach(id => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.textContent = '0';
-    } else {
-      console.warn(`Element with id '${id}' not found`);
-    }
-  });
+  document.getElementById('todayCount').textContent = '0';
+  document.getElementById('weekCount').textContent = '0';
+  document.getElementById('avgCount').textContent = '0';
+  document.getElementById('todayCountSummary').textContent = '0';
+  document.getElementById('weekCountSummary').textContent = '0';
+  document.getElementById('avgCountSummary').textContent = '0';
   console.log('Report cleared');
 }
 
@@ -267,93 +262,64 @@ function generateTimeRangeReport() {
   
   console.log('Filtered visits:', filteredVisits);
   
-  const timeRangeCount = document.getElementById('timeRangeCount');
-  if (timeRangeCount) {
-    timeRangeCount.textContent = filteredVisits.length;
-  } else {
-    console.warn('Element with id "timeRangeCount" not found');
-  }
+  document.getElementById('timeRangeCount').textContent = filteredVisits.length;
   console.log('Time range report generated, count:', filteredVisits.length);
 }
 
 function clearTimeRangeReport() {
   console.log('Clearing time range report');
-  const timeRangeCount = document.getElementById('timeRangeCount');
-  if (timeRangeCount) {
-    timeRangeCount.textContent = '0';
-  } else {
-    console.warn('Element with id "timeRangeCount" not found');
-  }
-  
-  const elements = {
-    'startDate': '',
-    'endDate': '',
-    'startTime': '00:00',
-    'endTime': '23:59'
-  };
-
-  Object.entries(elements).forEach(([id, value]) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.value = value;
-    } else {
-      console.warn(`Element with id '${id}' not found`);
-    }
-  });
-  
+  document.getElementById('timeRangeCount').textContent = '0';
+  document.getElementById('startDate').value = '';
+  document.getElementById('endDate').value = '';
+  document.getElementById('startTime').value = '00:00';
+  document.getElementById('endTime').value = '23:59';
   console.log('Time range report cleared');
 }
 
 function trackLiquid() {
   console.log('Tracking liquid intake');
-  const liquidAmount = document.getElementById('liquidAmount');
-  if (liquidAmount && liquidAmount.value) {
+  const liquidAmount = document.getElementById('liquidAmount').value;
+  if (liquidAmount) {
     const intake = {
       timestamp: new Date().toISOString(),
-      liquidAmount: parseInt(liquidAmount.value),
+      liquidAmount: parseInt(liquidAmount),
       foodType: null
     };
     intakes.push(intake);
     localStorage.setItem('intakes', JSON.stringify(intakes));
-    liquidAmount.value = '';
+    document.getElementById('liquidAmount').value = '';
     console.log('Liquid intake tracked:', intake);
-  } else {
-    console.warn('Liquid amount input not found or empty');
   }
 }
 
 function trackFood() {
   console.log('Tracking food intake');
-  const foodType = document.getElementById('foodType');
-  if (foodType && foodType.value) {
+  const foodType = document.getElementById('foodType').value;
+  if (foodType) {
     const intake = {
       timestamp: new Date().toISOString(),
       liquidAmount: null,
-      foodType: foodType.value
+      foodType: foodType
     };
     intakes.push(intake);
     localStorage.setItem('intakes', JSON.stringify(intakes));
-    foodType.value = '';
+    document.getElementById('foodType').value = '';
     console.log('Food intake tracked:', intake);
-  } else {
-    console.warn('Food type input not found or empty');
   }
 }
 
 function trackUrine() {
   console.log('Tracking urine output');
-  const urineAmount = document.getElementById('urineAmount');
-  if (urineAmount && urineAmount.value) {
+  const urineAmount = document.getElementById('urineAmount').value;
+  if (urineAmount) {
     const output = {
       timestamp: new Date().toISOString(),
-      amount: parseInt(urineAmount.value)
+      amount: parseInt(urineAmount)
     };
     urineOutputs.push(output);
     localStorage.setItem('urineOutputs', JSON.stringify(urineOutputs));
-    urineAmount.value = '';
+    document.getElementById('urineAmount').value = '';
     console.log('Urine output tracked:', output);
-  } else {
-    console.warn('Urine amount input not found or empty');
   }
 }
 
@@ -362,8 +328,7 @@ function clearLocalStorage() {
   const userInput = prompt("Warning: This action will delete all your data. Type 'delete' to confirm:");
   if (userInput && userInput.toLowerCase() === 'delete') {
     console.log('User confirmed. Clearing local storage');
-    localStorage.clear();
-    initializeAppData();
+    initializeAppData(true);
     updateReport();
     alert('Local storage has been cleared successfully.');
   } else {
@@ -382,26 +347,15 @@ document.addEventListener('DOMContentLoaded', function() {
       maxDate: "today"
     });
 
-    const elements = {
-      'trackButton': trackVisit,
-      'generateReport': generateDetailedReport,
-      'clearReport': clearReport,
-      'generateTimeRangeReport': generateTimeRangeReport,
-      'clearTimeRangeReport': clearTimeRangeReport,
-      'trackLiquidButton': trackLiquid,
-      'trackFoodButton': trackFood,
-      'trackUrineButton': trackUrine,
-      'clearStorageButton': clearLocalStorage
-    };
-
-    Object.entries(elements).forEach(([id, func]) => {
-      const element = document.getElementById(id);
-      if (element) {
-        element.addEventListener('click', () => safeExecute(func));
-      } else {
-        console.warn(`Element with id '${id}' not found`);
-      }
-    });
+    document.getElementById('trackButton').addEventListener('click', () => safeExecute(trackVisit));
+    document.getElementById('generateReport').addEventListener('click', () => safeExecute(generateDetailedReport));
+    document.getElementById('clearReport').addEventListener('click', () => safeExecute(clearReport));
+    document.getElementById('generateTimeRangeReport').addEventListener('click', () => safeExecute(generateTimeRangeReport));
+    document.getElementById('clearTimeRangeReport').addEventListener('click', () => safeExecute(clearTimeRangeReport));
+    document.getElementById('trackLiquidButton').addEventListener('click', () => safeExecute(trackLiquid));
+    document.getElementById('trackFoodButton').addEventListener('click', () => safeExecute(trackFood));
+    document.getElementById('trackUrineButton').addEventListener('click', () => safeExecute(trackUrine));
+    document.getElementById('clearStorageButton').addEventListener('click', () => safeExecute(clearLocalStorage));
     
     updateReport();
   });

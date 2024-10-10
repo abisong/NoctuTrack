@@ -1,9 +1,10 @@
-const CACHE_NAME = 'noctutrack-v3';
+const CACHE_NAME = 'noctutrack-v2';
 const urlsToCache = [
   '/',
   '/static/css/styles.css',
   '/static/js/script.js',
-  '/static/img/icon.svg',
+  '/static/img/icon-192x192.png',
+  '/static/img/icon-512x512.png',
   'https://cdn.jsdelivr.net/npm/chart.js',
   'https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css',
   'https://cdn.jsdelivr.net/npm/flatpickr'
