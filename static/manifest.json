@@ -1,7 +1,7 @@
 {
-  "name": "NoctuTrack",
-  "short_name": "NoctuTrack",
-  "description": "Nocturia Bathroom Tracker",
+  "name": "AI NoctuTrack",
+  "short_name": "AI NoctuTrack",
+  "description": "AI Nocturia Bathroom Tracker",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f0f8ff",
